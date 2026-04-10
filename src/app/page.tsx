@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AppHeader } from '@/components/AppHeader';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { useAssessmentStore } from '@/store/assessment-store';
+import type { Currency } from '@/types/assessment';
 
 export default function HomePage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function HomePage() {
   const [evaluatorName, setEvaluatorName] = useState('');
   const [assessmentDate, setAssessmentDate] = useState(today);
   const [annualSpend, setAnnualSpend] = useState(0);
+  const [currency, setCurrency] = useState<Currency>('BRL');
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -43,6 +45,7 @@ export default function HomePage() {
       evaluatorName: evaluatorName.trim(),
       assessmentDate,
       annualSpend,
+      currency,
     });
     router.push('/assessment');
   }
@@ -53,6 +56,7 @@ export default function HomePage() {
     setEvaluatorName('');
     setAssessmentDate(today);
     setAnnualSpend(0);
+    setCurrency('BRL');
   }
 
   const inputClass =
@@ -157,8 +161,9 @@ export default function HomePage() {
               id="annualSpend"
               required
               value={annualSpend}
+              currency={currency}
               onChange={setAnnualSpend}
-              className={inputClass}
+              onCurrencyChange={setCurrency}
             />
           </div>
 

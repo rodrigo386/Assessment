@@ -129,6 +129,12 @@ describe('calculateFinancialImpact', () => {
     expect(r.minLossAmount).toBe(0);
     expect(r.maxLossAmount).toBe(0);
   });
+
+  it('USD currency produces "US$" in the message', () => {
+    const r = calculateFinancialImpact(100_000, CLASSIFICATIONS.baixa, 'USD');
+    expect(r.message).toContain('US$');
+    expect(r.message).not.toContain('R$');
+  });
 });
 
 describe('computeResult', () => {
@@ -137,6 +143,7 @@ describe('computeResult', () => {
     evaluatorName: 'Consultor',
     assessmentDate: '2026-04-09',
     annualSpend: 1_000_000,
+    currency: 'BRL',
   };
 
   it('computes complete result for happy path', () => {

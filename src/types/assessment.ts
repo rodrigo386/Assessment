@@ -4,6 +4,8 @@ export type PillarId = 'dados' | 'pessoas' | 'processos' | 'tecnologia';
 
 export type ClassificationId = 'baixa' | 'media' | 'alta' | 'best-in-class';
 
+export type Currency = 'BRL' | 'USD';
+
 export interface ScoreOption {
   value: ScoreValue;
   label: string;
@@ -30,7 +32,8 @@ export interface CompanyInfo {
   companyName: string;
   evaluatorName: string;
   assessmentDate: string; // ISO yyyy-mm-dd
-  annualSpend: number;    // BRL in whole reais
+  annualSpend: number;    // whole units, no cents
+  currency: Currency;
 }
 
 export interface Answer {

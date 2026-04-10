@@ -69,7 +69,7 @@ export const useAssessmentStore = create<AssessmentState>()(
 
     }),
     {
-      name: 'iagentics-assessment-v1',
+      name: 'iagentics-assessment-v2',
       storage: createJSONStorage(() => (typeof window !== 'undefined' ? window.localStorage : (undefined as unknown as Storage))),
       partialize: (state) => ({
         company: state.company,

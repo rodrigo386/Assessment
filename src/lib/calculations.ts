@@ -3,12 +3,13 @@ import type {
   AssessmentResult,
   Classification,
   CompanyInfo,
+  Currency,
   FinancialImpact,
   PillarId,
   PillarScore,
 } from '@/types/assessment';
 import { ASSESSMENT_DATA, CLASSIFICATIONS } from '@/data/assessment-data';
-import { formatBRL } from './currency';
+import { formatCurrency } from './currency';
 
 function round1(value: number): number {
   return Number(value.toFixed(1));
@@ -42,8 +43,10 @@ export function getClassification(percentage: number): Classification {
 export function calculateFinancialImpact(
   annualSpend: number,
   classification: Classification,
+  currency: Currency = 'BRL',
 ): FinancialImpact {
   const safeSpend = Math.max(0, annualSpend);
+  const fmt = (v: number) => formatCurrency(v, currency);
 
   switch (classification.id) {
     case 'baixa': {
@@ -55,7 +58,7 @@ export function calculateFinancialImpact(
         minLossAmount,
         maxLossAmount,
         message:
-          `Sua empresa pode estar perdendo entre ${formatBRL(minLossAmount)} (8%) e ${formatBRL(maxLossAmount)} (15%) do spend anual`,
+          `Sua empresa pode estar perdendo entre ${fmt(minLossAmount)} (8%) e ${fmt(maxLossAmount)} (15%) do spend anual`,
       };
     }
     case 'media': {
@@ -67,7 +70,7 @@ export function calculateFinancialImpact(
         minLossAmount,
         maxLossAmount,
         message:
-          `Sua empresa pode estar perdendo entre ${formatBRL(minLossAmount)} (3%) e ${formatBRL(maxLossAmount)} (8%) do spend anual`,
+          `Sua empresa pode estar perdendo entre ${fmt(minLossAmount)} (3%) e ${fmt(maxLossAmount)} (8%) do spend anual`,
       };
     }
     case 'alta': {
@@ -77,8 +80,7 @@ export function calculateFinancialImpact(
         maxLossPercent: 3,
         minLossAmount: 0,
         maxLossAmount,
-        message:
-          `Sua empresa pode estar perdendo até ${formatBRL(maxLossAmount)} (3%) do spend anual`,
+        message: `Sua empresa pode estar perdendo até ${fmt(maxLossAmount)} (3%) do spend anual`,
       };
     }
     case 'best-in-class':
@@ -108,6 +110,10 @@ export function computeResult(
     },
     {} as Record<PillarId, PillarScore>,
   );
-  const financialImpact = calculateFinancialImpact(company.annualSpend, classification);
+  const financialImpact = calculateFinancialImpact(
+    company.annualSpend,
+    classification,
+    company.currency,
+  );
   return { totalScore, totalPercentage, classification, pillarScores, financialImpact };
 }
