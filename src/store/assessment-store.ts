@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Answer, AssessmentResult, CompanyInfo, Question, ScoreValue } from '@/types/assessment';
+import type { Answer, CompanyInfo, ScoreValue } from '@/types/assessment';
 import { ALL_QUESTIONS } from '@/data/assessment-data';
-import { computeResult } from '@/lib/calculations';
 
 interface AssessmentState {
   company: CompanyInfo | null;
@@ -18,8 +17,6 @@ interface AssessmentState {
   completeAssessment: () => void;
   reset: () => void;
 
-  getCurrentQuestion: () => Question | null;
-  getResult: () => AssessmentResult | null;
 }
 
 const TOTAL_QUESTIONS = ALL_QUESTIONS.length; // 8
@@ -70,16 +67,6 @@ export const useAssessmentStore = create<AssessmentState>()(
         isComplete: false,
       }),
 
-      getCurrentQuestion: () => {
-        const { currentQuestionIndex } = get();
-        return ALL_QUESTIONS[currentQuestionIndex] ?? null;
-      },
-
-      getResult: () => {
-        const { company, answers, isComplete } = get();
-        if (!company || !isComplete) return null;
-        return computeResult(company, answers);
-      },
     }),
     {
       name: 'iagentics-assessment-v1',

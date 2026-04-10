@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { AssessmentResult, CompanyInfo } from '@/types/assessment';
+import type { CompanyInfo } from '@/types/assessment';
 
 interface ExportPDFButtonProps {
   company: CompanyInfo;
-  result: AssessmentResult;
 }
 
-export function ExportPDFButton({ company, result }: ExportPDFButtonProps) {
+export function ExportPDFButton({ company }: ExportPDFButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +16,7 @@ export function ExportPDFButton({ company, result }: ExportPDFButtonProps) {
     setError(null);
     try {
       const { exportResultsPDF } = await import('@/lib/pdf');
-      await exportResultsPDF(company, result);
+      await exportResultsPDF(company);
     } catch (err) {
       console.error('PDF export failed:', err);
       setError('Não foi possível gerar o PDF. Tente novamente.');

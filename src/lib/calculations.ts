@@ -11,7 +11,7 @@ import { ASSESSMENT_DATA, CLASSIFICATIONS } from '@/data/assessment-data';
 import { formatBRL } from './currency';
 
 function round1(value: number): number {
-  return Math.round(value * 10) / 10;
+  return Number(value.toFixed(1));
 }
 
 export function calculatePillarScore(

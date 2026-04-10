@@ -1,10 +1,10 @@
 import type { Classification, ClassificationId, Pillar } from '@/types/assessment';
 
 export const CLASSIFICATIONS: Record<ClassificationId, Classification> = {
-  baixa:           { id: 'baixa',           label: 'BAIXA',         color: '#dc2626' },
-  media:           { id: 'media',           label: 'MÉDIA',         color: '#f59e0b' },
-  alta:            { id: 'alta',            label: 'ALTA',          color: '#10b981' },
-  'best-in-class': { id: 'best-in-class',   label: 'BEST IN CLASS', color: '#7030A0' },
+  baixa:           { id: 'baixa',           label: 'BAIXA',         color: '#dc2626', percentageMin: 0,  percentageMaxExclusive: 31 },
+  media:           { id: 'media',           label: 'MÉDIA',         color: '#f59e0b', percentageMin: 31, percentageMaxExclusive: 51 },
+  alta:            { id: 'alta',            label: 'ALTA',          color: '#10b981', percentageMin: 51, percentageMaxExclusive: 60 },
+  'best-in-class': { id: 'best-in-class',   label: 'BEST IN CLASS', color: '#7030A0', percentageMin: 60, percentageMaxExclusive: Infinity },
 };
 
 export const ASSESSMENT_DATA: Pillar[] = [

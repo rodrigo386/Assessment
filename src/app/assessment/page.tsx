@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { AppHeader } from '@/components/AppHeader';
@@ -25,6 +25,7 @@ export default function AssessmentPage() {
   const nextQuestion = useAssessmentStore((s) => s.nextQuestion);
   const previousQuestion = useAssessmentStore((s) => s.previousQuestion);
   const completeAssessment = useAssessmentStore((s) => s.completeAssessment);
+  const reset = useAssessmentStore((s) => s.reset);
 
   // Route guards — only run after hydration to avoid SSR mismatch on persist
   useEffect(() => {
@@ -33,12 +34,42 @@ export default function AssessmentPage() {
       return;
     }
     if (isComplete) {
-      router.replace('/results');
+      const restart =
+        typeof window !== 'undefined' &&
+        new URLSearchParams(window.location.search).get('restart') === '1';
+      if (restart) {
+        reset();
+        router.replace('/');
+      } else {
+        router.replace('/results');
+      }
     }
-  }, [company, isComplete, router]);
+  }, [company, isComplete, reset, router]);
 
   const currentQuestion = ALL_QUESTIONS[currentIndex];
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
+
+  const commentDebounceRef = useRef<number | null>(null);
+  // Track the last question id we rendered a draft for, so we can reset in the render body
+  const lastQuestionIdRef = useRef<string | undefined>(currentQuestion?.id);
+  const [commentDraft, setCommentDraft] = useState(currentAnswer?.comment ?? '');
+
+  // Reset draft when navigating to a different question (render-body sync to avoid effect setState)
+  if (lastQuestionIdRef.current !== currentQuestion?.id) {
+    lastQuestionIdRef.current = currentQuestion?.id;
+    setCommentDraft(currentAnswer?.comment ?? '');
+  }
+
+  // Flush debounce timer when unmounting or question changes
+  useEffect(() => {
+    return () => {
+      if (commentDebounceRef.current !== null) {
+        window.clearTimeout(commentDebounceRef.current);
+        commentDebounceRef.current = null;
+      }
+    };
+  }, [currentQuestion?.id]);
+
   const pillar = currentQuestion ? getPillarById(currentQuestion.pillarId) : undefined;
   const isLast = currentIndex === TOTAL_ASSESSMENT_QUESTIONS - 1;
   const hasScore = currentAnswer !== undefined;
@@ -95,9 +126,19 @@ export default function AssessmentPage() {
   }, [currentQuestion, currentIndex, currentAnswer, canGoForward, handleNext, handleSelect, previousQuestion]);
 
   function handleComment(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    // Textarea is disabled until a score is selected, so currentAnswer is always defined here.
     if (!currentQuestion || !currentAnswer) return;
-    setAnswer(currentQuestion.id, currentAnswer.score, e.target.value);
+    const value = e.target.value;
+    setCommentDraft(value);
+    if (commentDebounceRef.current !== null) {
+      window.clearTimeout(commentDebounceRef.current);
+    }
+    commentDebounceRef.current = window.setTimeout(() => {
+      // Re-read currentQuestion / currentAnswer through latest closure when timer fires
+      if (currentQuestion && currentAnswer) {
+        setAnswer(currentQuestion.id, currentAnswer.score, value);
+      }
+      commentDebounceRef.current = null;
+    }, 200);
   }
 
   const anim = useMemo(
@@ -163,7 +204,7 @@ export default function AssessmentPage() {
                 id="comment"
                 rows={3}
                 maxLength={500}
-                value={currentAnswer?.comment ?? ''}
+                value={commentDraft}
                 onChange={handleComment}
                 disabled={!hasScore}
                 placeholder={

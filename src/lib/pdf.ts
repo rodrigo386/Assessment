@@ -1,4 +1,4 @@
-import type { AssessmentResult, CompanyInfo } from '@/types/assessment';
+import type { CompanyInfo } from '@/types/assessment';
 
 function slugify(input: string): string {
   return input
@@ -10,11 +10,7 @@ function slugify(input: string): string {
     .slice(0, 40);
 }
 
-export async function exportResultsPDF(
-  company: CompanyInfo,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _result: AssessmentResult,
-): Promise<void> {
+export async function exportResultsPDF(company: CompanyInfo): Promise<void> {
   // Lazy import so the PDF libs don't bloat the initial bundle.
   const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
     import('html2canvas'),

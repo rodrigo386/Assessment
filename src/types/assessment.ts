@@ -43,6 +43,8 @@ export interface Classification {
   id: ClassificationId;
   label: string;
   color: string;
+  percentageMin: number;          // inclusive
+  percentageMaxExclusive: number; // exclusive (the next bucket starts here, or Infinity for top)
 }
 
 export interface PillarScore {

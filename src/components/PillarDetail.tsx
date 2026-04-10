@@ -18,7 +18,7 @@ export function PillarDetail({ pillar, score }: PillarDetailProps) {
       <div className="flex items-center justify-between text-sm">
         <div className="flex items-center gap-2 font-medium text-white">
           <span className="text-lg">{pillar.icon}</span>
-          <span>{pillar.name.replace(/&/g, '&').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}</span>
+          <span>{pillar.name.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}</span>
         </div>
         <span className="font-mono text-xs text-brand-muted">
           {score.score}/{score.max} · {score.percentage}%

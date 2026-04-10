@@ -157,7 +157,7 @@ export default function ResultsPage() {
 
         {/* Action buttons — not exported to PDF */}
         <div className="no-print mt-4 flex flex-wrap gap-3">
-          <ExportPDFButton company={company} result={result} />
+          <ExportPDFButton company={company} />
           <WhatsAppShareButton company={company} result={result} />
         </div>
       </main>
