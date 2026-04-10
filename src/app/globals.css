@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Brand color palette — each --color-* generates a bg-/text-/border-/ring-* utility */
+  --color-brand-purple: #7030A0;
+  --color-brand-purple-light: #a855f7;
+  --color-brand-purple-dark: #4c1d95;
+  --color-brand-dark: #0a0a0a;
+  --color-brand-surface: #111827;
+  --color-brand-border: #1f2937;
+  --color-brand-text: #e5e7eb;
+  --color-brand-muted: #9ca3af;
+  --color-brand-danger: #dc2626;
+  --color-brand-warning: #f59e0b;
+  --color-brand-success: #10b981;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Fonts — --font-inter is injected by next/font in layout.tsx */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Background images — available as bg-gradient-purple / bg-radial-purple */
+  --background-image-gradient-purple: linear-gradient(135deg, #1a0d29 0%, #111827 100%);
+  --background-image-radial-purple: radial-gradient(ellipse at top, rgba(112, 48, 160, 0.2), transparent 50%);
+
+  /* Keyframes + named animations — available as animate-fade-in / animate-slide-in */
+  --animate-fade-in: fadeIn 0.4s ease-out;
+  --animate-slide-in: slideIn 0.35s ease-out;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    0% { opacity: 0; transform: translateX(20px); }
+    100% { opacity: 1; transform: translateX(0); }
   }
 }
 
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background-color: var(--color-brand-dark);
+  color: var(--color-brand-text);
+  min-height: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-brand-purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* PDF export mode — applied via JS on <body> before html2canvas capture */
+body.pdf-export {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+body.pdf-export .no-print {
+  display: none !important;
+}
+body.pdf-export * {
+  animation: none !important;
+  transition: none !important;
+}
+body.pdf-export [data-card] {
+  background-color: #f9fafb !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
