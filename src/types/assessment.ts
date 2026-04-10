@@ -30,7 +30,6 @@ export interface Pillar {
 
 export interface CompanyInfo {
   companyName: string;
-  evaluatorName: string;
   assessmentDate: string; // ISO yyyy-mm-dd
   annualSpend: number;    // whole units, no cents
   currency: Currency;

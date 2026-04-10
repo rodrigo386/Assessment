@@ -11,62 +11,66 @@ function slugify(input: string): string {
 }
 
 export async function exportResultsPDF(company: CompanyInfo): Promise<void> {
-  // Lazy import so the PDF libs don't bloat the initial bundle.
   const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
     import('html2canvas'),
     import('jspdf'),
   ]);
 
-  const pageIds = ['pdf-page-1', 'pdf-page-2', 'pdf-page-3'] as const;
-  const elements = pageIds
-    .map((id) => document.getElementById(id))
-    .filter((el): el is HTMLElement => {
-      if (!el) return false;
-      // Skip a page that's entirely empty (e.g., pdf-page-3 without comments)
-      return el.textContent?.trim() !== '' && el.offsetHeight > 0;
-    });
-
-  if (elements.length === 0) {
-    throw new Error('Nada para exportar: seções do relatório não encontradas.');
+  const container = document.getElementById('pdf-content');
+  if (!container || container.offsetHeight === 0) {
+    throw new Error('Nada para exportar: conteúdo do relatório não encontrado.');
   }
 
-  // Ensure fonts are fully loaded before capture
+  // Wait for fonts to be loaded
   if (typeof document !== 'undefined' && 'fonts' in document) {
     await (document as Document & { fonts: { ready: Promise<void> } }).fonts.ready;
   }
 
   document.body.classList.add('pdf-export');
   try {
+    const canvas = await html2canvas(container, {
+      scale: 2,
+      backgroundColor: '#0a0a0a', // dark background — matches the app theme
+      useCORS: true,
+    });
+
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const pageWidth = 210;
     const pageHeight = 297;
-    const margin = 10;
+    const margin = 8;
     const contentWidth = pageWidth - margin * 2;
-    const maxContentHeight = pageHeight - margin * 2 - 12; // reserve footer
+    const maxContentHeight = pageHeight - margin * 2 - 10; // reserve footer
 
-    for (let i = 0; i < elements.length; i++) {
-      const el = elements[i];
-      const canvas = await html2canvas(el, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        useCORS: true,
-      });
-      const imgData = canvas.toDataURL('image/png');
-      const scaledHeight = Math.min((canvas.height * contentWidth) / canvas.width, maxContentHeight);
+    // Scale image to fit A4 single page, maintaining aspect ratio
+    const canvasAR = canvas.width / canvas.height;
+    let imgWidth = contentWidth;
+    let imgHeight = imgWidth / canvasAR;
 
-      if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, 'PNG', margin, margin + 5, contentWidth, scaledHeight);
-
-      pdf.setFontSize(8);
-      pdf.setTextColor(107, 114, 128);
-      pdf.text(
-        'Relatório gerado por IAgentics | www.iagentics.com.br',
-        pageWidth / 2,
-        pageHeight - 8,
-        { align: 'center' },
-      );
-      pdf.text(`Página ${i + 1}`, pageWidth - margin, pageHeight - 8, { align: 'right' });
+    if (imgHeight > maxContentHeight) {
+      imgHeight = maxContentHeight;
+      imgWidth = imgHeight * canvasAR;
     }
+
+    // Center horizontally if scaled down
+    const xOffset = margin + (contentWidth - imgWidth) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+
+    // Fill the PDF background with dark color (jsPDF default is white page)
+    pdf.setFillColor(10, 10, 10); // #0a0a0a
+    pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+    pdf.addImage(imgData, 'PNG', xOffset, margin, imgWidth, imgHeight);
+
+    // Footer — light text on dark background
+    pdf.setFontSize(7);
+    pdf.setTextColor(156, 163, 175); // #9ca3af (brand-muted)
+    pdf.text(
+      'Relatório gerado por IAgentics | www.iagentics.com.br',
+      pageWidth / 2,
+      pageHeight - 5,
+      { align: 'center' },
+    );
 
     const filename = `iagentics-assessment-${slugify(company.companyName)}-${company.assessmentDate}.pdf`;
     pdf.save(filename);

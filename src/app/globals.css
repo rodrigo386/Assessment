@@ -57,22 +57,14 @@ body {
   border-radius: 4px;
 }
 
-/* PDF export mode — applied via JS on <body> before html2canvas capture */
-body.pdf-export {
-  background-color: #ffffff !important;
-  color: #111827 !important;
-}
+/* PDF export mode — applied via JS on <body> before html2canvas capture.
+   Keep the dark theme intact — only hide non-printable elements and freeze animations. */
 body.pdf-export .no-print {
   display: none !important;
 }
 body.pdf-export * {
   animation: none !important;
   transition: none !important;
-}
-body.pdf-export [data-card] {
-  background-color: #f9fafb !important;
-  border-color: #e5e7eb !important;
-  color: #111827 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

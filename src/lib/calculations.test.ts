@@ -140,7 +140,6 @@ describe('calculateFinancialImpact', () => {
 describe('computeResult', () => {
   const company: CompanyInfo = {
     companyName: 'Empresa Teste',
-    evaluatorName: 'Consultor',
     assessmentDate: '2026-04-09',
     annualSpend: 1_000_000,
     currency: 'BRL',

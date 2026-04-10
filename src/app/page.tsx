@@ -18,7 +18,6 @@ export default function HomePage() {
   const today = new Date().toISOString().slice(0, 10);
 
   const [companyName, setCompanyName] = useState('');
-  const [evaluatorName, setEvaluatorName] = useState('');
   const [assessmentDate, setAssessmentDate] = useState(today);
   const [annualSpend, setAnnualSpend] = useState(0);
   const [currency, setCurrency] = useState<Currency>('BRL');
@@ -33,7 +32,6 @@ export default function HomePage() {
 
   const isValid =
     companyName.trim().length >= 2 &&
-    evaluatorName.trim().length >= 2 &&
     assessmentDate.length >= 10 &&
     annualSpend > 0;
 
@@ -42,7 +40,6 @@ export default function HomePage() {
     if (!isValid) return;
     setCompany({
       companyName: companyName.trim(),
-      evaluatorName: evaluatorName.trim(),
       assessmentDate,
       annualSpend,
       currency,
@@ -53,7 +50,6 @@ export default function HomePage() {
   function handleStartNew() {
     reset();
     setCompanyName('');
-    setEvaluatorName('');
     setAssessmentDate(today);
     setAnnualSpend(0);
     setCurrency('BRL');
@@ -121,22 +117,6 @@ export default function HomePage() {
               onChange={(e) => setCompanyName(e.target.value)}
               className={inputClass}
               placeholder="Ex: Acme Corp"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="evaluatorName" className="text-sm font-medium text-brand-text">
-              Nome do consultor *
-            </label>
-            <input
-              id="evaluatorName"
-              type="text"
-              required
-              minLength={2}
-              value={evaluatorName}
-              onChange={(e) => setEvaluatorName(e.target.value)}
-              className={inputClass}
-              placeholder="Ex: Maria Silva"
             />
           </div>
 

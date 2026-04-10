@@ -86,9 +86,9 @@ export default function ResultsPage() {
         }
       />
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
-        {/* PDF Page 1 — Summary + Radar */}
+        <div id="pdf-content" className="flex flex-col gap-6">
+        {/* Section 1 — Summary + Radar */}
         <section
-          id="pdf-page-1"
           className="flex flex-col gap-6"
         >
           <motion.div
@@ -98,7 +98,6 @@ export default function ResultsPage() {
           >
             <div className="flex flex-col gap-1 text-xs text-brand-muted sm:flex-row sm:gap-3">
               <span><strong className="text-brand-text">{company.companyName}</strong></span>
-              <span>· Consultor: {company.evaluatorName}</span>
               <span>· {formattedDate}</span>
             </div>
             <div className="mt-3 flex flex-wrap items-baseline gap-4">
@@ -141,19 +140,20 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        {/* PDF Page 2 — Financial impact */}
-        <section id="pdf-page-2" className="flex flex-col gap-6">
+        {/* Section 2 — Financial impact */}
+        <section className="flex flex-col gap-6">
           <motion.div {...fadeIn(0.3)}>
             <FinancialImpact classification={result.classification} impact={result.financialImpact} />
           </motion.div>
         </section>
 
-        {/* PDF Page 3 — Comments (optional) */}
-        <section id="pdf-page-3" className="flex flex-col gap-6">
+        {/* Section 3 — Comments (optional) */}
+        <section className="flex flex-col gap-6">
           <motion.div {...fadeIn(0.4)}>
             <CommentsSummary pillars={ASSESSMENT_DATA} answers={answers} />
           </motion.div>
         </section>
+        </div>
 
         {/* Action buttons — not exported to PDF */}
         <div className="no-print mt-4 flex flex-wrap gap-3">
