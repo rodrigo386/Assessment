@@ -23,7 +23,7 @@ export default function HomePage() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setHydrated(true);
+    setHydrated(true); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
 
   const hasInProgress = hydrated && !!company && !isComplete && Object.keys(answers).length > 0;

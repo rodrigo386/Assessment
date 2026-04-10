@@ -12,6 +12,7 @@ function slugify(input: string): string {
 
 export async function exportResultsPDF(
   company: CompanyInfo,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _result: AssessmentResult,
 ): Promise<void> {
   // Lazy import so the PDF libs don't bloat the initial bundle.

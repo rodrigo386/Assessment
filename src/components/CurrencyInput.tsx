@@ -17,7 +17,7 @@ export function CurrencyInput({ value, onChange, id, required, placeholder, clas
 
   // Reflect external value changes (e.g., store rehydration).
   useEffect(() => {
-    setDisplay(value > 0 ? formatBRL(value) : '');
+    setDisplay(value > 0 ? formatBRL(value) : ''); // eslint-disable-line react-hooks/set-state-in-effect
   }, [value]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
