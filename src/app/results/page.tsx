@@ -9,6 +9,7 @@ import { ClassificationBadge } from '@/components/ClassificationBadge';
 import { PillarDetail } from '@/components/PillarDetail';
 import { FinancialImpact } from '@/components/FinancialImpact';
 import { CommentsSummary } from '@/components/CommentsSummary';
+import { ExportPDFButton } from '@/components/ExportPDFButton';
 import { WhatsAppShareButton } from '@/components/WhatsAppShareButton';
 import { useAssessmentStore } from '@/store/assessment-store';
 import { ASSESSMENT_DATA } from '@/data/assessment-data';
@@ -156,6 +157,7 @@ export default function ResultsPage() {
 
         {/* Action buttons — not exported to PDF */}
         <div className="no-print mt-4 flex flex-wrap gap-3">
+          <ExportPDFButton company={company} result={result} />
           <WhatsAppShareButton company={company} result={result} />
         </div>
       </main>
