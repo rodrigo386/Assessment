@@ -12,7 +12,7 @@ function slugify(input: string): string {
 
 export async function exportResultsPDF(company: CompanyInfo): Promise<void> {
   const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-    import('html2canvas'),
+    import('html2canvas-pro'),
     import('jspdf'),
   ]);
 
